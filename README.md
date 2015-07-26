@@ -1,13 +1,13 @@
 # sql questions
 
- - ACID Stands for atomicity, consistency, isolation, durability.
- - A Table is in First Normal form if it has no repeating fields or no repeating columns for example if you have table that stores users and their primary and secondary phone numbers than because you are storing more than one phone number fields this violates 1NF as you have repeating fields.
+ - **ACID** Stands for atomicity, consistency, isolation, durability.
+ - A Table is in **First Normal form** if it has no repeating fields or no repeating columns for example if you have table that stores users and their primary and secondary phone numbers than because you are storing more than one phone number fields this violates 1NF as you have repeating fields.
  ![Alt text](images/1nf.png?raw=true "1NF")
- - A table is in in Second Normal Form if it is in 1NF and has no attribute associated with partial key column or no attribute associated with part of primary key. For example in below table first three columns are primary key in below table if we analyze the column CANDYBAR_WEIGHT_OZ are all same and it is associated with only CANDYBAR_ID and not with rest of the primary key, it is neither associated with RESPONDENT_ID nor SURVEY_DATE i.e. CANDYBAR_WEIGHT_OZ associated with part of primary key. 
+ - A table is in in **Second Normal Form** if it is in 1NF and has no attribute associated with partial key column or no attribute associated with part of primary key. For example in below table first three columns are primary key in below table if we analyze the column CANDYBAR_WEIGHT_OZ are all same and it is associated with only CANDYBAR_ID and not with rest of the primary key, it is neither associated with RESPONDENT_ID nor SURVEY_DATE i.e. CANDYBAR_WEIGHT_OZ associated with part of primary key. 
  ![Alt text](images/2nf.png?raw=true "2NF")
- - A table is in third normal form if it is in first normal form, second normal form and all attribute must be directly associated with the primary key.
+ - A table is in **Third normal form** if it is in first normal form, second normal form and all attribute must be directly associated with the primary key.
  ![Alt text](images/3nf.png?raw=true "3NF")
- - Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
+ - Large tables are broken into smaller tables known as **Fact table and Dimension table**. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
  ![Alt text](images/FandD.png?raw=true "Fact and Dimensions")
  - SET TIMING ON is used to see the elapsed time:
 
@@ -30,17 +30,45 @@ SELECT SUM(TASTE_RATING) AS TOT_TASTE
     Elapsed: 00:00:02:594
 
 ```
-As you can see from above elapsed time putting historical data table in 3NF reduces elapsed time to quarter of original elapsed time thats why we shouldn’t jump to indexes.
-A candidate key is one that can identify each row of a table uniquely.
-Generally a candidate key becomes the primary key of the table. If the table has more than one candidate key, one of them will become the primary key, and the rest are called alternate  keys. 
+ - As you can see from above elapsed time putting historical data table in 3NF reduces elapsed time to quarter of original elapsed time that's why we should not jump to indexes.
+ - A **Candidate key** is one that can identify each row of a table uniquely.
+ - Generally a candidate key becomes the **primary key** of the table. If the table has more than one candidate key, one of them will become the primary key, and the rest are called **alternate keys**. 
+ - A key formed by combining at least two or more columns is called **Composite key**.
+ - *A primary key is a unique key and contains no null values.*
+ - **Oracle automatically puts index on primary key** to help you automatically join FACT and DIMENSION Tables quicker. **Oracle doesn’t automatically index foreign key.**
+ - Below example creates **inline constraint syntax** that is because we are using CONSTRAINT keyword on the same line as the definition of the column, this syntax only allows you to have single column as the primary key:
+ 
+ ```sql
+ CREATE TABLE DATE_DIM(
+    SURVEY_DATE DATE CONSTRAINT pk_surveydate PRIMARY KEY,
+    SURVEY_YEAR NUMBER,
+    SURVEY_MONTH NUMBER);
+ ```
+ 
+ - If you need to have multiple column as primary keys than use **out of line CONSTRAINT syntax** to indicate that multiple column act as primary key:
+ ```sql
+  CREATE TABLE CANDYBAR_FACT(
+     RESPONDENT_ID          NUMBER
+     CANDYBAR_ID            NUMBER
+     SURVEY_DATE            DATE
+     TASTE_RATING           NUMBER
+     APPEARANCE_RATING      NUMBER
+     TEXTURE_RATING         NUMBER
+     OVERALL_RATING         NUMBER
+     LIKELIHOOD_PURCHASE    NUMBER
+     NBR_CONSUMED           NUMBER
+     CONSTRAINT pk_candybarfact PRIMARY KEY (RESPONDENT_ID, CANDYBAR_ID, SURVEY_DATE)
+     );
+  ```
 
-A key formed by combining at least two or more columns is called composite key.
-
-A primary key is a unique key and contains no null values.
-Oracle automatically puts index on primary key to help you automatically join FACT and DIMENSION Tables quicker. Oracle doesn’t automatically index foreign key.
-Below example creates inline constraint syntax that is because we are using CONSTRAINT keyword on the same line as the definition of the column, this syntax only allows you to have single column as the primary key:
-If you need to have multiple column as primary keys than use out of line CONSTRAINT syntax to indicate that multiple column act as primary key:
-A Foreign Key is a column that is the primary key of another table. So in order to create a foreign key first make it primary key in that another table. So as shown in below screenshot we have CANDYBAR_MFR_ID this is than used to refer as foreign key in another table as shown below: here the CONSTRAINT key word gives the name to a constraint and REFERENCES says with table and ID it needs to refer to. So the foreign key is created using the CONSTRAINT keyword along with REFERENCES keyword. Note that data type is not mentioned in the foreign key of CANDBAR_MFR_ID that is because the data type that is used is from the CANDYMFR_DIM(CANDYBAR_MFR_ID).
+ - A **Foreign Key** is a column that is the primary key of another table. So in order to create a foreign key first make it primary key in that another table. So as shown in below we have **CANDYBAR_MFR_ID** this is than used to refer as foreign key in another table as shown below:
+ ```sql
+ CREATE TABLE CANDYMFR_DIM(
+    CANDYBAR_MFR_ID NUMBER CONSTRAINT pk_candybarmfrid PRIMARY KEY,
+    CANDYBAR_MFR_NAME VARCHAR2(50)
+ );
+ ```
+  here the CONSTRAINT key word gives the name to a constraint and REFERENCES says with table and ID it needs to refer to. So the foreign key is created using the CONSTRAINT keyword along with REFERENCES keyword. Note that data type is not mentioned in the foreign key of CANDBAR_MFR_ID that is because the data type that is used is from the CANDYMFR_DIM(CANDYBAR_MFR_ID).
 One way to make SQL queries execute faster is to select only those columns that are used in analysis rather than all i.e. replace * with the name of columns you need.
 Dont include columns in your table that will never be used. Separate out infrequently used columns into a separate table. for example in below table we have columns in below that might be rarely used these are moved to separate table to make FACT table skinny 
 Placing a column that contain most NULL values at the end of the table saves space. This can also make execution time faster as the armature of the read/write operation have to move less.
