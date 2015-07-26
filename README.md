@@ -9,8 +9,27 @@
  ![Alt text](images/3nf.png?raw=true "3NF")
  - Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
  ![Alt text](images/FandD.png?raw=true "Fact and Dimensions")
+ - SET TIMING ON is used to see the elapsed time:
 
-SET TIMING ON is used to see the elapsed time:
+```sql
+SET TIMING ON
+SELECT SUM(TASTE_RATING) AS TOT_TASTE 
+    FROM CANDYBAR_HISTORICAL_DATA;
+    
+    TOT_TASTE
+    27500000
+    
+    Elapsed: 00:00:09:993
+
+SELECT SUM(TASTE_RATING) AS TOT_TASTE 
+    FROM CANDYBAR_FACT;
+    
+    TOT_TASTE
+    27500000
+    
+    Elapsed: 00:00:02:594
+
+```
 As you can see from above elapsed time putting historical data table in 3NF reduces elapsed time to quarter of original elapsed time thats why we shouldn’t jump to indexes.
 A candidate key is one that can identify each row of a table uniquely.
 Generally a candidate key becomes the primary key of the table. If the table has more than one candidate key, one of them will become the primary key, and the rest are called alternate  keys. 
