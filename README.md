@@ -7,8 +7,9 @@
  ![Alt text](images/2nf.png?raw=true "2NF")
  - A table is in third normal form if it is in first normal form, second normal form and all attribute must be directly associated with the primary key.
  ![Alt text](images/3nf.png?raw=true "3NF")
- - Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary
-keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
+ - Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
+ ![Alt text](images/FandD.png?raw=true "Fact and Dimensions")
+
 SET TIMING ON is used to see the elapsed time:
 As you can see from above elapsed time putting historical data table in 3NF reduces elapsed time to quarter of original elapsed time thats why we shouldn’t jump to indexes.
 A candidate key is one that can identify each row of a table uniquely.
