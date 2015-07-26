@@ -83,25 +83,45 @@ SELECT SUM(TASTE_RATING) AS TOT_TASTE
  ![Alt text](images/AUX.png?raw=true "AUX")
  - Placing a column that contain most NULL values at the end of the table saves space. This can also make execution time faster as the armature of the read/write operation have to move less.
  ![Alt text](images/null.png?raw=true "null")
-Optimizing NON-JOINS:
-Use SELECT to limit columns: SELECT RESPONDENT_ID, TASTE_RATING.. the more columns you bring back the more temporary space will be used.
-Avoid using asterisk(*) SELECT * FROM .. 
-User WHERE to limit number of rows that are coming back from database.
-Avoid implicit conversion, i.e. make sure that a constant that you are comparing with a column datatype matches as well, if not an implicit conversion will happen and this will slow down your query. For example comparing a String to a Number will force an implicit conversion, and also comparing a text string with a date to a column that contains a date data type will also do an implicit conversion.
-Oracle recommends to use WHERE Clauses: Ands and Equijoins
-WHERE and index (later explained)
-INTERSECT vs INNER JOIN: 
-INTERSECT is same as Set intersection.
-INTERSECT performs better than INNER JOIN.
-Unlike an iNNER JOIN, INTERSECT performs its own DISTINCT without the need of DISTINCT keyword. 
-Another advantage of INTERSECT is it can be on more than two tables, we just follow up with INTERSECT and another query.
-MINUS vs LEFT JOIN
-Minus is same as set minus.
-Minus performs better than corresponding join.
-MINUS performs its own DISTINCT.
-Example 
-Corelated Sub queries:
-In a corelated subquery a query contains one or more columns from the outer query. Correlated subquery generally perform poorly as the database loops to the columns from outer query. 
+
+### Optimizing NON-JOINS:
+ - Use SELECT to limit columns: SELECT RESPONDENT_ID, TASTE_RATING.. the more columns you bring back the more temporary space will be used.
+ - Avoid using asterisk(*) SELECT * FROM .. 
+ - Use WHERE to limit number of rows that are coming back from database.
+ - Avoid implicit conversion, i.e. make sure that a constant that you are comparing with a column datatype matches as well, if not an implicit conversion will happen and this will slow down your query. For example comparing a String to a Number will force an implicit conversion, and also comparing a text string with a date to a column that contains a date data type will also do an implicit conversion.
+ - Oracle recommends to use WHERE Clauses: Ands and Equijoins
+ - WHERE and index (later explained)
+
+#### INTERSECT vs INNER JOIN: 
+ - INTERSECT is same as Set intersection.
+ - INTERSECT performs better than INNER JOIN.
+ - Unlike an INNER JOIN, INTERSECT performs its own DISTINCT without the need of DISTINCT keyword. 
+ - Another advantage of INTERSECT is it can be on more than two tables, we just follow up with INTERSECT and another query.
+ ![Alt text](images/intersect.png?raw=true "Intersect")
+
+```sql
+SELECT DISTINCT A.ID, A.DESCR 
+    FROM LEFT_T A 
+    INNER JOIN RIGHT_T B 
+    ON A.ID = B.ID;
+
+SELECT A.ID, A.DESCR 
+    FROM LEFT_T A 
+    INTERSECT 
+SELECT B.ID, B.DESCR 
+    FROM RIGHT_T B;
+
+```
+
+#### MINUS vs LEFT JOIN
+ - Minus is same as set minus.
+ - Minus performs better than corresponding join.
+ - MINUS performs its own DISTINCT.
+ - Example:
+ ![Alt text](images/minus.png?raw=true "Minus")
+ 
+#### Corelated Sub queries:
+ - In a corelated subquery a query contains one or more columns from the outer query. Correlated subquery generally perform poorly as the database loops to the columns from outer query. 
 rewrite the query:
 
 26. CREATE INDEX myindex oN MYTABLE(MYCOL) what type of index will be created by this statement?
