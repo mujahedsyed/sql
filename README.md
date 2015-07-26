@@ -4,10 +4,10 @@
  - A Table is in First Normal form if it has no repeating fields or no repeating columns for example if you have table that stores users and their primary and secondary phone numbers than because you are storing more than one phone number fields this violates 1NF as you have repeating fields.
  ![Alt text](images/1nf.png?raw=true "1NF")
  - A table is in in Second Normal Form if it is in 1NF and has no attribute associated with partial key column or no attribute associated with part of primary key. For example in below table first three columns are primary key in below table if we analyze the column CANDYBAR_WEIGHT_OZ are all same and it is associated with only CANDYBAR_ID and not with rest of the primary key, it is neither associated with RESPONDENT_ID nor SURVEY_DATE i.e. CANDYBAR_WEIGHT_OZ associated with part of primary key. 
-
- 
-A table is in third normal form if it is in first normal form, second normal form and all attribute must be directly associated with the primary key.
-Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary
+ ![Alt text](images/2nf.png?raw=true "2NF")
+ - A table is in third normal form if it is in first normal form, second normal form and all attribute must be directly associated with the primary key.
+ ![Alt text](images/3nf.png?raw=true "3NF")
+ - Large tables are broken into smaller tables known as Fact table and Dimension table. Skinny tables are known as fact table and they are the ones that are directly related with primary key like in the above table OVERALL_RATING is directly related with primary
 keys, dimension table are the other information table that were created due to elimination from 1NF, 2NF and 3NF. Together fact and dimension table create the original fat table.
 SET TIMING ON is used to see the elapsed time:
 As you can see from above elapsed time putting historical data table in 3NF reduces elapsed time to quarter of original elapsed time thats why we shouldn’t jump to indexes.
