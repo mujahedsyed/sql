@@ -64,14 +64,25 @@ SELECT SUM(TASTE_RATING) AS TOT_TASTE
  - A **Foreign Key** is a column that is the primary key of another table. So in order to create a foreign key first make it primary key in that another table. So as shown in below we have **CANDYBAR_MFR_ID** this is than used to refer as foreign key in another table as shown below:
  ```sql
  CREATE TABLE CANDYMFR_DIM(
-    CANDYBAR_MFR_ID NUMBER CONSTRAINT pk_candybarmfrid PRIMARY KEY,
-    CANDYBAR_MFR_NAME VARCHAR2(50)
+    CANDYBAR_MFR_ID     NUMBER CONSTRAINT pk_candybarmfrid PRIMARY KEY,
+    CANDYBAR_MFR_NAME   VARCHAR2(50)
+ );
+ 
+ CREATE TABLE CANDYBAR_DIM(
+    CANDYBAR_ID     NUMBER CONSTRAINT pk_candybarid PRIMARY KEY,
+    CANDYBAR_NAME   VARCHAR2(50),
+    CANDYBAR_MFR_ID CONSTRAINT fk_candybarmfrid
+                        REFERENCES CANDYBAR_MFR_ID(CANDYBAR_MFR_ID),
+    CANDYBAR_WEIGHT_OZ NUMBER
  );
  ```
-  here the CONSTRAINT key word gives the name to a constraint and REFERENCES says with table and ID it needs to refer to. So the foreign key is created using the CONSTRAINT keyword along with REFERENCES keyword. Note that data type is not mentioned in the foreign key of CANDBAR_MFR_ID that is because the data type that is used is from the CANDYMFR_DIM(CANDYBAR_MFR_ID).
-One way to make SQL queries execute faster is to select only those columns that are used in analysis rather than all i.e. replace * with the name of columns you need.
-Dont include columns in your table that will never be used. Separate out infrequently used columns into a separate table. for example in below table we have columns in below that might be rarely used these are moved to separate table to make FACT table skinny 
-Placing a column that contain most NULL values at the end of the table saves space. This can also make execution time faster as the armature of the read/write operation have to move less.
+  here the CONSTRAINT key word gives the name to a constraint and REFERENCES says with table and ID it needs to refer to. So the foreign key is created using the CONSTRAINT keyword along with REFERENCES keyword. **Note that data type is not mentioned in the foreign key of CANDBAR_MFR_ID that is because the data type that is used is from the CANDYMFR_DIM(CANDYBAR_MFR_ID).**
+  
+ - One way to make SQL queries execute faster is to select only those columns that are used in analysis rather than all i.e. replace * with the name of columns you need.
+ - Don't include columns in your table that will never be used. Separate out infrequently used columns into a separate table. for example in below table we have columns in below that might be rarely used these are moved to separate table (auxillary table) to make FACT table skinny:
+ ![Alt text](images/AUX.png?raw=true "AUX")
+ - Placing a column that contain most NULL values at the end of the table saves space. This can also make execution time faster as the armature of the read/write operation have to move less.
+ ![Alt text](images/null.png?raw=true "null")
 Optimizing NON-JOINS:
 Use SELECT to limit columns: SELECT RESPONDENT_ID, TASTE_RATING.. the more columns you bring back the more temporary space will be used.
 Avoid using asterisk(*) SELECT * FROM .. 
