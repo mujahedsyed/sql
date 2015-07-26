@@ -123,9 +123,10 @@ SELECT B.ID, B.DESCR
  
 #### Corelated Sub queries:
  - In a correlated sub-query a query contains one or more columns from the outer query. Correlated subquery generally perform poorly as the database loops to the columns from outer query. 
- - wherever possible rewrite the query:
+ - wherever possible rewrite the query; for instance below query takes little over 5 seconds, this query is rewritten as INNER JOIN.
  ![Alt text](images/cor.png?raw=true "Cor")
-
+ ![Alt text](images/cor-in.png?raw=true "Cor In")
+ 
 ### General Questions
  - CREATE INDEX myindex oN MYTABLE(MYCOL) what type of index will be created by this statement?
 non-clustered index. By default a clustered index is created only on primary key.
