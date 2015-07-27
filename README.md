@@ -127,7 +127,62 @@ SELECT B.ID, B.DESCR
  ![Alt text](images/cor.png?raw=true "Cor")
  ![Alt text](images/cor-in.png?raw=true "Cor In")
  
-### General Questions
+#### IN Condition vs EXISTS Condition
+ - IN Condition: It tests a value for membership in a list of values or subquery.
+ - An EXISTS condition tests for existence of rows in a subquery. EXISTS Condition looking for atleast one row to return TRUE.
+ - In both IN and EXISTS, matched inner query causes outer query to return data.
+ - If inner query small as compared to outer -> **IN**
+ - If inner query large as compared to outer -> **EXISTS**
+ 
+#### Multi-Column IN Condition vs ANDs/ORs
+ - Generally a multi-column in condition performance slightly faster than series of and's or or's. Below query takes just under 10 seconds.
+  ![Alt text](images/and.png?raw=true "And")
+ - Let's rewrite this with IN Condition, if we see below we notice a small performance gain although not significant but this multi-column in is better in readability:
+  ![Alt text](images/multi-in.png?raw=true "Multi IN")
+
+#### With Clause (Subquery factoring clause)
+ - Neatens your SQL Code.
+ - May significantly reduce execution time.
+ - The WITH query_name clause lets you assign a name to a subquery block. You can then reference the subquery block multiple places in the query by specifying the query name. Oracle optimizes the query by treating the query name as either an inline view or as a temporary table.
+ - The WITH clause query runs once and oracle than uses the same results wherever this are referred to.
+ - Example below shows a query without WITH:
+ ![Alt text](images/no-with.png?raw=true "No With")
+ - Example below shows a query with WITH:
+ ![Alt text](images/with.png?raw=true "With")
+ 
+#### APPEND Hint for INSERTs
+ - APPEND hint speeds up INSERTs in the table.
+ - When you DELETE rows from the table ORACLE doesn't collapse the table to squeeze out those blank rows but when you insert new data into the table oracle will attempt to find those deleted rows and fill them in with new data and this does takes time.
+ - In order to speeds up inserts use:
+ ```sql
+  INSERT /*+APPEND*/ -- this may look like a comment but + sign indicates to oracle that what's following is a hint.
+  ```
+ - APPEND will tell oracle not to search for deleted rows insert slap the new data at the end of the table.
+ - It has been observed that even if you dont have deleted rows using append significantly reduces execution time.
+ ![Alt text](images/append.png?raw=true "Append")
+
+### Optimizing Joins
+
+#### ON vs WHERE Clause
+ - No significant reduction time but use ON Clause to indicate JOIN criteria and use WHERE Clause to indicate table subsetting criteria.
+ ![Alt text](images/on-where.png?raw=true "On Where")
+
+#### Order of Tables on FROM Clause
+ - Tables with fewer rows first (here number of rows is actually subsetting criteria that is applied to it and not the number of rows in the table individually).
+ -  Significantly reduces execution time. (but if you have indexes order of tables shouldn't matter).
+ ![Alt text](images/order-from.png?raw=true "Order From")
+ 
+#### Avoid Cartesian Products
+ - All combinations of rows produced from one table against another table.
+ - possible use of lot of temporary space.
+ - try to avoid, if possible! 
+
+## Overview Of Indexes
+
+### What is an Index?
+ - 
+
+## General Questions
  - CREATE INDEX myindex oN MYTABLE(MYCOL) what type of index will be created by this statement?
 non-clustered index. By default a clustered index is created only on primary key.
  - Lock escalation is the process of converting a lot of low level locks (like row locks, page locks) into higher level locks (like table locks). 
